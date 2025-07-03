@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package shortener.svc;
+
+option go_package = "github.com/titansdev/bitzap/services/common-svc/protobuf/proto/shortener-svc;shortener";
+
+service ShortenerService {
+    rpc ShortenURL(ShortenURLRequest) returns (ShortenURLResponse);
+    rpc Resolve(ResolveRequest) returns (ResolveResponse);
+}
+
+message ShortenURLRequest {
+    string origin_url = 1;
+    string tenant_id = 2;
+}
+
+message ShortenURLResponse {
+    string short_code = 1;
+}
+
+message ResolveRequest {
+    string short_code = 1;
+}
+
+message ResolveResponse {
+    string origin_url = 1;
+}
+
+

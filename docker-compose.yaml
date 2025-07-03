@@ -12,7 +12,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./infra/postgres/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
 
   redis-master:
     image: redis:7
@@ -20,10 +19,8 @@ services:
     ports:
       - "6379:6379"
     command: ["redis-server", "--requirepass", "redispass", "--appendonly", "yes"]
-    volumes:
-      - ./infra/redis/master:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "redis-cli", "-a", "redispass", "ping"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -39,8 +36,11 @@ services:
     depends_on:
       redis-master:
         condition: service_healthy
-    volumes:
-      - ./infra/redis/replica:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redispass", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   redis-sentinel:
     image: redis:7
@@ -48,24 +48,28 @@ services:
     ports:
       - "26379:26379"
     command: >
-      redis-sentinel /etc/sentinel.conf
-    volumes:
-      - ./infra/redis/sentinel.conf:/etc/sentinel.conf
+      sh -c "
+        cat <<EOF > /etc/sentinel.conf
+        port 26379
+        sentinel monitor mymaster redis-master 6379 2
+        sentinel auth-pass mymaster redispass
+        sentinel down-after-milliseconds mymaster 5000
+        sentinel failover-timeout mymaster 10000
+        sentinel parallel-syncs mymaster 1
+        EOF
+        redis-sentinel /etc/sentinel.conf"
     depends_on:
       redis-master:
         condition: service_healthy
       redis-replica:
-        condition: service_started
+        condition: service_healthy
 
   clickhouse:
     image: clickhouse/clickhouse-server:23.3
     container_name: clickhouse
     ports:
-      - "8123:8123"   # HTTP interface
-      - "9000:9000"   # Native interface
-    volumes:
-      - ./infra/clickhouse:/var/lib/clickhouse
-      - ./infra/clickhouse/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - "8123:8123"
+      - "9000:9000"
 
   kafka:
     image: bitnami/kafka:latest
@@ -81,8 +85,64 @@ services:
       KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_KRAFT_CLUSTER_ID: "cluster-1"
       ALLOW_PLAINTEXT_LISTENER: "yes"
+
+  kong-database:
+    image: postgres:15
+    container_name: kong-database
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_DB: kong
+      POSTGRES_PASSWORD: kong
+    ports:
+      - "5433:5432"
     volumes:
-      - ./infra/kafka:/bitnami/kafka
+      - kong_data:/var/lib/postgresql/data
+
+  kong-migrations:
+    image: kong:3.6
+    command: kong migrations bootstrap
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_PASSWORD: kong
+      KONG_PG_USER: kong
+      KONG_PG_DATABASE: kong
+    depends_on:
+      - kong-database
+
+  kong:
+    image: kong:3.6
+    container_name: kong
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_PASSWORD: kong
+      KONG_PG_USER: kong
+      KONG_PG_DATABASE: kong
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001, 0.0.0.0:8444 ssl
+    ports:
+      - "8000:8000"   # Kong proxy
+      - "8443:8443"   # Kong proxy SSL
+      - "8001:8001"   # Kong admin API
+      - "8444:8444"   # Kong admin API SSL
+    depends_on:
+      - kong-database
+      - kong-migrations
+
+  konga:
+    image: pantsel/konga:latest
+    container_name: konga
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "1337:1337"
+    depends_on:
+      - kong
 
 volumes:
   postgres_data:
+  kong_data:

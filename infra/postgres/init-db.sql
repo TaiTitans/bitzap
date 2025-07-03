@@ -35,19 +35,6 @@ CREATE TABLE sessions (
     ip_address TEXT,
     expires_at TIMESTAMP
 );
--- analytics-service-db
-CREATE TABLE click_logs (
-    short_code String,
-    tenant_id UUID,
-    timestamp DateTime,
-    ip String,
-    country String,
-    city String,
-    os String,
-    device String,
-    browser String,
-    user_agent String
-) ENGINE = MergeTree()
 PARTITION BY toYYYYMM(timestamp)
 ORDER BY (short_code, timestamp);
 --billing-service-db 
@@ -61,18 +48,3 @@ CREATE TABLE subscriptions (
     started_at TIMESTAMP,
     ended_at TIMESTAMP
 );
--- analytics-service-db
-CREATE TABLE IF NOT EXISTS click_logs (
-    short_code String,
-    tenant_id UUID,
-    timestamp DateTime,
-    ip String,
-    country String,
-    city String,
-    os String,
-    device String,
-    browser String,
-    user_agent String
-) ENGINE = MergeTree()
-PARTITION BY toYYYYMM(timestamp)
-ORDER BY (short_code, timestamp);

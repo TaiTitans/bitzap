@@ -1,0 +1,244 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: auth-service
+    url: http://auth-svc:8080
+    routes:
+      - name: auth-login
+        paths:
+          - /api/v1/auth/login
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              secret_is_base64: false
+              algorithm: HS256
+          - name: file-log
+            config:
+              path: /tmp/kong-auth-login.log
+      - name: auth-register
+        paths:
+          - /api/v1/auth/register
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: file-log
+            config:
+              path: /tmp/kong-auth-register.log
+      - name: auth-refresh
+        paths:
+          - /api/v1/auth/refresh
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              secret_is_base64: false
+              algorithm: HS256
+          - name: file-log
+            config:
+              path: /tmp/kong-auth-refresh.log
+
+  - name: shortener-service
+    url: http://shortener-svc:8080
+    routes:
+      - name: create-short-url
+        paths:
+          - /api/v1/shorten
+        methods:
+          - POST
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              secret_is_base64: false
+              algorithm: HS256
+          - name: file-log
+            config:
+              path: /tmp/kong-shortener-create.log
+      - name: list-urls
+        paths:
+          - /api/v1/urls
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              secret_is_base64: false
+              algorithm: HS256
+          - name: file-log
+            config:
+              path: /tmp/kong-shortener-list.log
+      - name: update-url
+        paths:
+          - /api/v1/urls
+        methods:
+          - PUT
+          - PATCH
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              secret_is_base64: false
+              algorithm: HS256
+          - name: file-log
+            config:
+              path: /tmp/kong-shortener-update.log
+      - name: delete-url
+        paths:
+          - /api/v1/urls
+        methods:
+          - DELETE
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              secret_is_base64: false
+              algorithm: HS256
+          - name: file-log
+            config:
+              path: /tmp/kong-shortener-delete.log
+
+  - name: redirect-service
+    url: http://redirect-svc:8080
+    routes:
+      - name: redirect-short-url
+        paths:
+          - /r
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: file-log
+            config:
+              path: /tmp/kong-redirect.log
+        # No JWT required for redirect - public access
+
+  - name: analytics-service
+    url: http://analytics-svc:8080
+    routes:
+      - name: analytics-dashboard
+        paths:
+          - /api/v1/analytics
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              secret_is_base64: false
+              algorithm: HS256
+          - name: file-log
+            config:
+              path: /tmp/kong-analytics-dashboard.log
+      - name: analytics-stats
+        paths:
+          - /api/v1/analytics/stats
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              secret_is_base64: false
+              algorithm: HS256
+          - name: file-log
+            config:
+              path: /tmp/kong-analytics-stats.log
+
+  - name: billing-service
+    url: http://billing-svc:8080
+    routes:
+      - name: billing-plans
+        paths:
+          - /api/v1/billing/plans
+        methods:
+          - GET
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              secret_is_base64: false
+              algorithm: HS256
+          - name: file-log
+            config:
+              path: /tmp/kong-billing-plans.log
+      - name: billing-subscription
+        paths:
+          - /api/v1/billing/subscription
+        methods:
+          - GET
+          - POST
+          - PUT
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              secret_is_base64: false
+              algorithm: HS256
+          - name: file-log
+            config:
+              path: /tmp/kong-billing-subscription.log
+
+consumers:
+  - username: bitzap-app
+    jwt_secrets:
+      - key: bitzap-key
+        algorithm: HS256
+        secret: bitzap-secret-2025
+  - username: mobile-app
+    jwt_secrets:
+      - key: mobile-key
+        algorithm: HS256
+        secret: mobile-secret-2025
+
+plugins:
+  - name: cors
+    config:
+      origins:
+        - "*"
+      methods:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+        - OPTIONS
+      headers:
+        - Accept
+        - Accept-Version
+        - Content-Length
+        - Content-MD5
+        - Content-Type
+        - Date
+        - X-Auth-Token
+        - Authorization
+      exposed_headers:
+        - X-Auth-Token
+      credentials: true
+      max_age: 3600
+
+  - name: rate-limiting
+    config:
+      minute: 100
+      hour: 1000
+      day: 10000
+      policy: local
+      hide_client_headers: false
+
+  - name: request-size-limiting
+    config:
+      allowed_payload_size: 10
+
+  - name: response-transformer
+    config:
+      add:
+        headers:
+          - "X-Powered-By: BitZap API Gateway"
+          - "X-API-Version: v1.0"

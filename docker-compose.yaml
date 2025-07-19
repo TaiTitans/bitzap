@@ -71,7 +71,7 @@ services:
       - "8123:8123"
       - "9000:9000"
 
-  kafka:
+  kafka-master:
     image: bitnami/kafka:latest
     container_name: kafka
     ports:
@@ -142,6 +142,72 @@ services:
       - "1337:1337"
     depends_on:
       - kong
+
+  # # GoFrame Services
+  # auth-svc:
+  #   build: ./services/auth-svc
+  #   container_name: auth-svc
+  #   ports:
+  #     - "8081:8080"
+  #   environment:
+  #     - GF_GCFG_FILE=config/config.yaml
+  #   depends_on:
+  #     - postgres
+  #     - redis-master
+  #   networks:
+  #     - default
+
+  # shortener-svc:
+  #   build: ./services/shortener-svc
+  #   container_name: shortener-svc
+  #   ports:
+  #     - "8082:8080"
+  #   environment:
+  #     - GF_GCFG_FILE=config/config.yaml
+  #   depends_on:
+  #     - postgres
+  #     - redis-master
+  #     - clickhouse
+  #   networks:
+  #     - default
+
+  # redirect-svc:
+  #   build: ./services/redirect-svc
+  #   container_name: redirect-svc
+  #   ports:
+  #     - "8083:8080"
+  #   environment:
+  #     - GF_GCFG_FILE=config/config.yaml
+  #   depends_on:
+  #     - postgres
+  #     - redis-master
+  #   networks:
+  #     - default
+
+  # analytics-svc:
+  #   build: ./services/analytics-svc
+  #   container_name: analytics-svc
+  #   ports:
+  #     - "8084:8080"
+  #   environment:
+  #     - GF_GCFG_FILE=config/config.yaml
+  #   depends_on:
+  #     - clickhouse
+  #     - kafka
+  #   networks:
+  #     - default
+
+  # billing-svc:
+  #   build: ./services/billing-svc
+  #   container_name: billing-svc
+  #   ports:
+  #     - "8085:8080"
+  #   environment:
+  #     - GF_GCFG_FILE=config/config.yaml
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - default
 
 volumes:
   postgres_data:

@@ -9,15 +9,6 @@ CREATE TABLE short_links (
     click_limit INT DEFAULT 0,
     is_active BOOLEAN DEFAULT true
 );
--- user-service-db
-CREATE TABLE users (
-    id UUID PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-    role VARCHAR(50) DEFAULT 'user',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE tenants (
     id UUID PRIMARY KEY,
     name VARCHAR(100),
@@ -26,14 +17,14 @@ CREATE TABLE tenants (
     plan VARCHAR(50) DEFAULT 'free',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 -- auth-service -> user-service-db
-CREATE TABLE sessions (
+CREATE TABLE users (
     id UUID PRIMARY KEY,
-    user_id UUID REFERENCES users(id),
-    refresh_token TEXT,
-    user_agent TEXT,
-    ip_address TEXT,
-    expires_at TIMESTAMP
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    role VARCHAR(50) DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 PARTITION BY toYYYYMM(timestamp)
 ORDER BY (short_code, timestamp);

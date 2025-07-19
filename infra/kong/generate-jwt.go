@@ -67,7 +67,7 @@ func decodeJWTToken(tokenString string) (*JWTClaims, error) {
 }
 
 func main() {
-	fmt.Println("🔑 Kong JWT Token Generator (Go Version)")
+	fmt.Println("Kong JWT Token Generator (Go Version)")
 	fmt.Println("=" + fmt.Sprintf("%40s", ""))
 
 	// Generate token

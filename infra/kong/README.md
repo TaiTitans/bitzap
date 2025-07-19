@@ -8,6 +8,7 @@ Kong Gateway is configured as the API Gateway for the BitZap URL Shortener proje
 - **Logging**: Request/Response logging
 - **Load Balancing**: Distributes traffic among services
 
+
 ## 🚀 Quick Start
 
 ### 1. Start Services
@@ -19,11 +20,6 @@ docker-compose up -d
 ```bash
 chmod +x infra/kong/setup-kong.sh
 ./infra/kong/setup-kong.sh
-```
-
-### 3. Generate JWT Token
-```bash
-python3 infra/kong/generate-jwt.py
 ```
 
 ## 📋 API Endpoints

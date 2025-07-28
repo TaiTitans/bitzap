@@ -1,0 +1,56 @@
+server:
+  address:     ":8080"
+  openapiPath: "/api.json"
+  swaggerPath: "/swagger"
+  errorStack: false
+  errorLogEnabled: false
+  errorLogPattern: "error-{Ymd}.log"
+
+logger:
+  path: "./log/"
+  file: "{Y-m-d}.log"
+  prefix: ""
+  level: "error"
+  timeFormat: "2006-01-02 15:04:05"
+  ctxKeys: ["req","TraceId"]
+  header: true
+  stSkip: 0
+  stdout: true
+  rotateSize: 0
+  rotateExpire: 0
+  rotateBackupLimit: 0
+  rotateBackupExpire: 0
+  rotateBackupCompress: 0
+  rotateCheckInterval: "1h"
+  stdoutColorDisabled: false
+  writerColorEnable: false
+  flags: 92
+
+database:
+  logger:
+    level: "error"
+    stdout: true
+  default:
+    link: "postgres:admin:12345678@tcp(127.0.0.1:3306)/auth_service?charset=utf8mb4&parseTime=True"
+    debug: true
+    maxIdle: "1"
+    maxOpen: "1"
+    maxLifetime: "60s"
+
+
+redis:
+  default:
+    address: 127.0.0.1:6379
+    db: 0
+    idleTimeout: "60s"
+    maxConnLifetime: "90s"
+    waitTimeout: "60s"
+    dialTimeout: "30s"
+    readTimeout: "30s"
+    writeTimeout: "30s"
+    maxActive: 100
+
+auth:
+  secretKey: +hd>PywO8jrAnIewJvK7U[bU1;*28m
+  accessTokenExpireMinute: 60
+  refreshTokenExpireMinute: 1440

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="ALL" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="26dd2e7d-b379-4439-8955-c95e97751439" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/Makefile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/README.MD" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/api/hello/hello.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/api/hello/v1/hello.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-svc/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/services/auth-svc/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/hack/config.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/hack/hack-cli.mk" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/hack/hack.mk" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/internal/cmd/cmd.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/internal/consts/consts.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/internal/controller/hello/hello.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/internal/controller/hello/hello_new.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/internal/controller/hello/hello_v1_hello.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/internal/dao/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/internal/logic/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/internal/model/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/internal/model/do/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/internal/model/entity/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/internal/packed/packed.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/internal/service/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/main.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/manifest/deploy/kustomize/base/deployment.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/manifest/deploy/kustomize/base/kustomization.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/manifest/deploy/kustomize/base/service.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/manifest/deploy/kustomize/overlays/develop/configmap.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/manifest/deploy/kustomize/overlays/develop/deployment.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/manifest/deploy/kustomize/overlays/develop/kustomization.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/manifest/docker/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/manifest/docker/docker.sh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/manifest/i18n/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/manifest/protobuf/.keep-if-necessary" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/manifest/sql/init-db.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/resource/public/html/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/resource/public/plugin/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/resource/public/resource/css/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/resource/public/resource/image/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/resource/public/resource/js/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/resource/template/.gitkeep" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/auth-svc/utility/.gitkeep" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="GOROOT" url="file://$USER_HOME$/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.24.4.linux-amd64" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 5
+}]]></component>
+  <component name="ProjectId" id="30GaWzbcJtu0fIXOapla50uyN3q" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.GoLinterPluginOnboarding": "true",
+    "RunOnceActivity.GoLinterPluginStorageMigration": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "git-widget-placeholder": "auth-svc/setup-auth",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/home/titansdev/Documents/github/my-repo/bitzap/services/auth-svc",
+    "nodejs_package_manager_path": "npm"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-gosdk-3b128438d3f6-4b567d62c776-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-251.26094.127" />
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-GO-251.26094.127" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="26dd2e7d-b379-4439-8955-c95e97751439" name="Changes" comment="" />
+      <created>1753256399170</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1753256399170</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VgoProject">
+    <settings-migrated>true</settings-migrated>
+  </component>
+</project>

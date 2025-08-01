@@ -1,28 +1,20 @@
 package util
 
 import (
-	"math/rand"
-	"time"
+	"crypto/rand"
+	"encoding/hex"
 )
 
-const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-
-var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
-
-func RandomString(length int) string {
-	b := make([]byte, length)
-	for i := range b {
-		b[i] = charset[seededRand.Intn(len(charset))]
-	}
-	return string(b)
+// GenerateRandomString generates a random string of specified length
+func GenerateRandomString(length int) string {
+	bytes := make([]byte, length/2)
+	rand.Read(bytes)
+	return hex.EncodeToString(bytes)
 }
 
-// RandomInt [min, max)
-func RandomInt(min, max int) int {
-	return seededRand.Intn(max-min) + min
-}
-
-// RandomFloat64 [0, 1)
-func RandomFloat64() float64 {
-	return seededRand.Float64()
+// GenerateRandomBytes generates random bytes of specified length
+func GenerateRandomBytes(length int) ([]byte, error) {
+	bytes := make([]byte, length)
+	_, err := rand.Read(bytes)
+	return bytes, err
 }

@@ -4,22 +4,22 @@ import (
 	"fmt"
 )
 
-// NewError message
+// NewError creates a new error with message
 func NewError(message string) error {
 	return fmt.Errorf("%s", message)
 }
 
-// NewErrorf format
+// NewErrorf creates a new formatted error
 func NewErrorf(format string, args ...interface{}) error {
 	return fmt.Errorf(format, args...)
 }
 
-// WrapError wrap error message
+// WrapError wraps an error with additional message
 func WrapError(err error, message string) error {
 	return fmt.Errorf("%s: %w", message, err)
 }
 
-// WrapErrorf wrap error format
+// WrapErrorf wraps an error with formatted message
 func WrapErrorf(err error, format string, args ...interface{}) error {
 	return fmt.Errorf("%s: %w", fmt.Sprintf(format, args...), err)
 }

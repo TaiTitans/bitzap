@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"math/rand"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -67,7 +68,17 @@ func RequestIDMiddleware() fiber.Handler {
 	}
 }
 
-// generateRequestID create request ID basic
+// generateRequestID
 func generateRequestID() string {
-	return time.Now().Format("20060102150405") + "-" + util.RandomString(8)
+	return time.Now().Format("20060102150405") + "-" + randomString(8)
+}
+
+// randomString
+func randomString(n int) string {
+	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	b := make([]byte, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
 }

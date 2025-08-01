@@ -48,9 +48,16 @@ redis:
     dialTimeout: "30s"
     readTimeout: "30s"
     writeTimeout: "30s"
-    maxActive: 100
+    maxActive: 10000
 
 auth:
   secretKey: +hd>PywO8jrAnIewJvK7U[bU1;*28m
   accessTokenExpireMinute: 60
   refreshTokenExpireMinute: 1440
+
+email:
+  mailjet_api_key: "your_mailjet_api_key"
+  mailjet_secret_key: "your_mailjet_secret_key"
+  from_email: "noreply@bitzap.com"
+  from_name: "Bitzap Auth Service"
+  app_url: "http://localhost:8080"

@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	fiberSwagger "github.com/swaggo/fiber-swagger"
 	"github.com/taititans/bitzap/auth-svc/internal/config"
 	"github.com/taititans/bitzap/auth-svc/internal/controller/http"
@@ -47,6 +48,11 @@ import (
 // @Failure     500 {object} map[string]string "Internal server error"
 // @Router      /redis/test [get]
 func main() {
+	// Load environment variables from .env file
+	if err := godotenv.Load(); err != nil {
+		log.Println("Warning: .env file not found, using system environment variables")
+	}
+
 	// Load configuration from environment variables
 	cfg := config.LoadConfig()
 
@@ -81,13 +87,13 @@ func main() {
 	// Initialize database
 	db := initialize.InitDatabase(dbConfig)
 	defer initialize.CloseDatabase(db)
-	appLogger.Info("Database connected successfully")
+	appLogger.Info("POSTGRES database connected successfully: auth-service")
 
 	// Run migrations
-	if err := initialize.AutoMigrate(db); err != nil {
-		appLogger.Error("Failed to run database migrations", util.Error(err))
-		log.Fatal(err)
-	}
+	// if err := initialize.AutoMigrate(db); err != nil {
+	// 	appLogger.Error("Failed to run database migrations", util.Error(err))
+	// 	log.Fatal(err)
+	// }
 	appLogger.Info("Database migrations completed")
 
 	// Initialize repositories
@@ -98,13 +104,13 @@ func main() {
 
 	// Redis configuration from environment
 	redisConfig := initialize.RedisConfig{
-		Address:      cfg.Redis.Address,
-		Password:     cfg.Redis.Password,
-		DB:           cfg.Redis.DB,
-		DialTimeout:  cfg.Redis.DialTimeout,
-		ReadTimeout:  cfg.Redis.ReadTimeout,
-		WriteTimeout: cfg.Redis.WriteTimeout,
-		MaxActive:    cfg.Redis.MaxActive,
+		Address:      cfg.Redis.Default.Address,
+		Password:     cfg.Redis.Default.Password,
+		DB:           cfg.Redis.Default.DB,
+		DialTimeout:  cfg.Redis.Default.DialTimeout,
+		ReadTimeout:  cfg.Redis.Default.ReadTimeout,
+		WriteTimeout: cfg.Redis.Default.WriteTimeout,
+		MaxActive:    cfg.Redis.Default.MaxActive,
 	}
 
 	redisClient := initialize.InitRedis(redisConfig)
@@ -143,6 +149,10 @@ func main() {
 		appLogger.Info("Ping request received")
 		return c.JSON(fiber.Map{"message": "pong"})
 	})
+
+	// Log Swagger URL - sử dụng log.Printf thay vì appLogger
+	swaggerURL := "http://localhost:" + cfg.Server.Port + "/swagger/"
+	log.Printf("📚 Swagger documentation available at: %s", swaggerURL)
 
 	appLogger.Info("Server starting on :" + cfg.Server.Port)
 	log.Fatal(app.Listen(":" + cfg.Server.Port))

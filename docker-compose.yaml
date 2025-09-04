@@ -73,7 +73,7 @@ services:
 
   kafka:
     image: bitnami/kafka:latest
-    container_name: kafka
+    container_name: kafka-bitzap
     ports:
       - "9092:9092"
     environment:

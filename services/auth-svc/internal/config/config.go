@@ -1,110 +1,128 @@
 package config
 
 import (
+	"io/ioutil"
+	"log"
 	"os"
-	"strconv"
+
+	"gopkg.in/yaml.v3"
 )
 
 // Config holds all application configuration
 type Config struct {
-	Email    EmailConfig
-	Database DatabaseConfig
-	Redis    RedisConfig
-	Server   ServerConfig
-}
-
-// DatabaseConfig holds database configuration
-type DatabaseConfig struct {
-	Host            string
-	Port            string
-	User            string
-	Password        string
-	DBName          string
-	SSLMode         string
-	MaxOpenConns    int
-	MaxIdleConns    int
-	ConnMaxLifetime int // in hours
-}
-
-// RedisConfig holds Redis configuration
-type RedisConfig struct {
-	Address      string
-	Password     string
-	DB           int
-	DialTimeout  string
-	ReadTimeout  string
-	WriteTimeout string
-	MaxActive    int
+	Server   ServerConfig   `yaml:"server"`
+	Logger   LoggerConfig   `yaml:"logger"`
+	Database DatabaseConfig `yaml:"database"`
+	Redis    RedisConfig    `yaml:"redis"`
+	Auth     AuthConfig     `yaml:"auth"`
+	Email    EmailConfig    `yaml:"email"`
 }
 
 // ServerConfig holds server configuration
 type ServerConfig struct {
-	Port     string
-	LogLevel string
+	Address         string `yaml:"address"`
+	Port            string `yaml:"port"`
+	OpenAPIPath     string `yaml:"openapiPath"`
+	SwaggerPath     string `yaml:"swaggerPath"`
+	ErrorStack      bool   `yaml:"errorStack"`
+	ErrorLogEnabled bool   `yaml:"errorLogEnabled"`
+	ErrorLogPattern string `yaml:"errorLogPattern"`
+	LogLevel        string // Derived from logger config
 }
 
-// LoadConfig loads configuration from environment variables
+// LoggerConfig holds logger configuration
+type LoggerConfig struct {
+	Path                 string   `yaml:"path"`
+	File                 string   `yaml:"file"`
+	Prefix               string   `yaml:"prefix"`
+	Level                string   `yaml:"level"`
+	TimeFormat           string   `yaml:"timeFormat"`
+	CtxKeys              []string `yaml:"ctxKeys"`
+	Header               bool     `yaml:"header"`
+	StSkip               int      `yaml:"stSkip"`
+	Stdout               bool     `yaml:"stdout"`
+	RotateSize           int      `yaml:"rotateSize"`
+	RotateExpire         int      `yaml:"rotateExpire"`
+	RotateBackupLimit    int      `yaml:"rotateBackupLimit"`
+	RotateBackupExpire   int      `yaml:"rotateBackupExpire"`
+	RotateBackupCompress int      `yaml:"rotateBackupCompress"`
+	RotateCheckInterval  string   `yaml:"rotateCheckInterval"`
+	StdoutColorDisabled  bool     `yaml:"stdoutColorDisabled"`
+	WriterColorEnable    bool     `yaml:"writerColorEnable"`
+	Flags                int      `yaml:"flags"`
+}
+
+// DatabaseConfig holds database configuration
+type DatabaseConfig struct {
+	Host            string               `yaml:"host"`
+	Port            string               `yaml:"port"`
+	User            string               `yaml:"user"`
+	Password        string               `yaml:"password"`
+	DBName          string               `yaml:"dbname"`
+	SSLMode         string               `yaml:"sslmode"`
+	MaxOpenConns    int                  `yaml:"max_open_conns"`
+	MaxIdleConns    int                  `yaml:"max_idle_conns"`
+	ConnMaxLifetime int                  `yaml:"conn_max_lifetime"`
+	Logger          DatabaseLoggerConfig `yaml:"logger"`
+	Debug           bool                 `yaml:"debug"`
+}
+
+type DatabaseLoggerConfig struct {
+	Level  string `yaml:"level"`
+	Stdout bool   `yaml:"stdout"`
+}
+
+// RedisConfig holds Redis configuration
+type RedisConfig struct {
+	Default RedisDefaultConfig `yaml:"default"`
+}
+
+type RedisDefaultConfig struct {
+	Address         string `yaml:"address"`
+	Password        string `yaml:"password"`
+	DB              int    `yaml:"db"`
+	IdleTimeout     string `yaml:"idleTimeout"`
+	MaxConnLifetime string `yaml:"maxConnLifetime"`
+	WaitTimeout     string `yaml:"waitTimeout"`
+	DialTimeout     string `yaml:"dialTimeout"`
+	ReadTimeout     string `yaml:"readTimeout"`
+	WriteTimeout    string `yaml:"writeTimeout"`
+	MaxActive       int    `yaml:"maxActive"`
+}
+
+// AuthConfig holds authentication configuration
+type AuthConfig struct {
+	SecretKey                string `yaml:"secretKey"`
+	AccessTokenExpireMinute  int    `yaml:"accessTokenExpireMinute"`
+	RefreshTokenExpireMinute int    `yaml:"refreshTokenExpireMinute"`
+}
+
+// LoadConfig loads configuration from YAML file
 func LoadConfig() *Config {
-	return &Config{
-		Email:    loadEmailConfig(),
-		Database: loadDatabaseConfig(),
-		Redis:    loadRedisConfig(),
-		Server:   loadServerConfig(),
+	data, err := ioutil.ReadFile("configs/config.yaml")
+	if err != nil {
+		log.Fatalf("Failed to read config file: %v", err)
 	}
-}
 
-// loadEmailConfig loads email configuration from environment variables
-func loadEmailConfig() EmailConfig {
-	return EmailConfig{
-		MailjetAPIKey:    getEnv("MAILJET_API_KEY", ""),
-		MailjetSecretKey: getEnv("MAILJET_SECRET_KEY", ""),
-		FromEmail:        getEnv("FROM_EMAIL", "noreply@bitzap.com"),
-		FromName:         getEnv("FROM_NAME", "Bitzap Auth Service"),
-		AppURL:           getEnv("APP_URL", "http://localhost:8080"),
+	var config Config
+	if err := yaml.Unmarshal(data, &config); err != nil {
+		log.Fatalf("Failed to parse config file: %v", err)
 	}
-}
 
-// loadDatabaseConfig loads database configuration from environment variables
-func loadDatabaseConfig() DatabaseConfig {
-	maxOpenConns, _ := strconv.Atoi(getEnv("DB_MAX_OPEN_CONNS", "150"))
-	maxIdleConns, _ := strconv.Atoi(getEnv("DB_MAX_IDLE_CONNS", "10"))
-	connMaxLifetime, _ := strconv.Atoi(getEnv("DB_CONN_MAX_LIFETIME", "1"))
-
-	return DatabaseConfig{
-		Host:            getEnv("DB_HOST", "localhost"),
-		Port:            getEnv("DB_PORT", "5432"),
-		User:            getEnv("DB_USER", "admin"),
-		Password:        getEnv("DB_PASSWORD", "admin123"),
-		DBName:          getEnv("DB_NAME", "auth_service"),
-		SSLMode:         getEnv("DB_SSL_MODE", "disable"),
-		MaxOpenConns:    maxOpenConns,
-		MaxIdleConns:    maxIdleConns,
-		ConnMaxLifetime: connMaxLifetime,
+	// Set derived values
+	config.Server.LogLevel = config.Logger.Level
+	if config.Server.Port == "" {
+		// Extract port from address if not set separately
+		if config.Server.Address != "" {
+			config.Server.Port = config.Server.Address[1:]
+		}
 	}
-}
 
-// loadRedisConfig loads Redis configuration from environment variables
-func loadRedisConfig() RedisConfig {
-	db, _ := strconv.Atoi(getEnv("REDIS_DB", "0"))
-	maxActive, _ := strconv.Atoi(getEnv("REDIS_MAX_ACTIVE", "10000"))
+	// Load sensitive data from environment variables
+	config.Email.MailjetAPIKey = getEnv("MAILJET_API_KEY", config.Email.MailjetAPIKey)
+	config.Email.MailjetSecretKey = getEnv("MAILJET_SECRET_KEY", config.Email.MailjetSecretKey)
 
-	return RedisConfig{
-		Address:      getEnv("REDIS_ADDRESS", "127.0.0.1:6379"),
-		Password:     getEnv("REDIS_PASSWORD", "redispass"),
-		DB:           db,
-		DialTimeout:  getEnv("REDIS_DIAL_TIMEOUT", "30s"),
-		ReadTimeout:  getEnv("REDIS_READ_TIMEOUT", "30s"),
-		WriteTimeout: getEnv("REDIS_WRITE_TIMEOUT", "30s"),
-		MaxActive:    maxActive,
-	}
-}
-
-// loadServerConfig loads server configuration from environment variables
-func loadServerConfig() ServerConfig {
-	return ServerConfig{
-		Port:     getEnv("SERVER_PORT", "8080"),
-		LogLevel: getEnv("LOG_LEVEL", "info"),
-	}
+	return &config
 }
 
 // getEnv gets environment variable with fallback default value

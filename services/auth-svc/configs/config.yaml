@@ -10,7 +10,7 @@ logger:
   path: "./log/"
   file: "{Y-m-d}.log"
   prefix: ""
-  level: "error"
+  level: "info"
   timeFormat: "2006-01-02 15:04:05"
   ctxKeys: ["req","TraceId"]
   header: true
@@ -27,20 +27,25 @@ logger:
   flags: 92
 
 database:
+  host: "127.0.0.1"
+  port: "5432"
+  user: "admin"
+  password: "admin123"
+  dbname: "auth-service"
+  sslmode: "disable"
+  max_open_conns: 150
+  max_idle_conns: 10
+  conn_max_lifetime: 1
   logger:
     level: "error"
     stdout: true
-  default:
-    link: "postgres:admin:12345678@tcp(127.0.0.1:3306)/auth_service?charset=utf8mb4&parseTime=True"
-    debug: true
-    maxIdle: "1"
-    maxOpen: "1"
-    maxLifetime: "60s"
+  debug: true
 
 
 redis:
   default:
     address: 127.0.0.1:6379
+    password: "redispass"
     db: 0
     idleTimeout: "60s"
     maxConnLifetime: "90s"
@@ -56,8 +61,8 @@ auth:
   refreshTokenExpireMinute: 1440
 
 email:
-  mailjet_api_key: "your_mailjet_api_key"
-  mailjet_secret_key: "your_mailjet_secret_key"
-  from_email: "noreply@bitzap.com"
-  from_name: "Bitzap Auth Service"
-  app_url: "http://localhost:8080"
+  mailjet_api_key: ${MAILJET_API_KEY}
+  mailjet_secret_key: ${MAILJET_SECRET_KEY}
+  from_email: bitzapofficial@gmail.com
+  from_name: Bitzap Official
+  app_url: localhost:8080

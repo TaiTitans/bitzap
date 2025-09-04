@@ -5,7 +5,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/taititans/bitzap/auth-svc/internal/domain/entity"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -50,14 +49,14 @@ func InitDatabase(config DatabaseConfig) *gorm.DB {
 }
 
 // AutoMigrate runs database migrations
-func AutoMigrate(db *gorm.DB) error {
-	return db.AutoMigrate(
-		&entity.User{},
-		&entity.UserRole{},
-		&entity.UserPermission{},
-		&entity.UserActivityLog{},
-	)
-}
+// func AutoMigrate(db *gorm.DB) error {
+// 	return db.AutoMigrate(
+// 		&entity.User{},
+// 		&entity.UserRole{},
+// 		&entity.UserPermission{},
+// 		&entity.UserActivityLog{},
+// 	)
+// }
 
 // CloseDatabase closes database connection
 func CloseDatabase(db *gorm.DB) error {

@@ -93,3 +93,6 @@ http://localhost:8080/swagger/
 | `REDIS_PASSWORD` | Redis password | redispass |
 | `SERVER_PORT` | Server port | 8080 |
 | `LOG_LEVEL` | Log level | info | 
+
+INIT SWAGGER:
+ swag init -g cmd/main.go
